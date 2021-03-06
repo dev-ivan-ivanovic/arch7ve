@@ -1,0 +1,192 @@
+<!------------------------------------------------------------------------------------------------------
+"Arch7ve" an open-source web app for document archiving written using "co7e" the open-source web framework.
+Copyright (C) 2021  Ivan Ivanovic
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+------------------------------------------------------------------------------------------------------>
+
+<template id="tmplUserListItem">
+    <li>       
+        <div class="co7e-vertical-layout">
+            <b>User</b>
+            
+            <div>
+                <span data-co7e-column="cUser"></span>@
+                <span data-co7e-column="cHost"></span>
+            </div>
+            
+            <div></div>
+        </div>
+
+        <div class="co7e-vertical-layout">
+            <b>Superuser</b>
+            <span data-co7e-column="cSuperuser"></span>
+            <div></div>
+        </div>
+    </li>
+</template>
+
+<template id="tmplUserOption">
+    <option data-co7e-column="cUser">
+        <span data-co7e-column="cUser"></span>@
+        <span data-co7e-column="cHost"></span>
+    </option>
+</template>
+
+<template id="tmplGroupListItem">
+    <li>       
+        <div class="co7e-vertical-layout">
+            <b>Group</b>
+            
+            <div>
+                <span data-co7e-column="cGroup"></span>@
+                <span data-co7e-column="cGroupHost"></span>
+            </div>
+            
+            <div></div>
+        </div>
+    </li>
+</template>
+
+<template id="tmplGroupOption">
+    <option data-co7e-column="cGroup">
+        <span data-co7e-column="cGroup"></span>@
+        <span data-co7e-column="cGroupHost"></span>
+    </option>
+</template>
+
+<template id="tmplUserGroupListItem">
+    <li>
+        <div class="co7e-vertical-layout">
+            <b>User</b>
+            
+            <div>
+                <span data-co7e-column="cUser"></span>@
+                <span data-co7e-column="cHost"></span>
+            </div>
+            
+            <div></div>
+        </div>
+        
+        <div class="co7e-vertical-layout">
+            <b>Group</b>
+            
+            <div>
+                <span data-co7e-column="cGroup"></span>@
+                <span data-co7e-column="cGroupHost"></span>
+            </div>
+            
+            <div></div>
+        </div>
+
+        <div class="co7e-vertical-layout">
+            <b>Superuser</b>
+            <span data-co7e-column="cSuperuser"></span>
+            <div></div>
+        </div> 
+    </li>
+</template>
+
+<template id="tmplUserForm">
+    <form onkeydown="updateUser(this, event)">
+        <h2>Update user</h2>
+
+        <label>User <sup>(read-only)</sup>
+            <input data-co7e-column="cUser" type="text" name="user" required readonly>
+        </label>
+    
+        <label>Type <sup>(required)</sup>
+            <select data-co7e-column="cSuperuser" name="type" required>
+                <option selected value="N">User</option>
+                <option value="Y">Superuser</option>
+            </select>
+        </label>
+
+        <label>Password <sup>(required)</sup>
+            <input type="password" name="password" required>
+        </label>
+
+        <button type="button" onclick="updateUser(this, event)">Update</button>
+        
+        <button type="button" onclick="deleteUser(this, event)">Delete</button>
+    </form>
+</template>
+
+<template id="tmplGroupForm">
+    <form>
+        <h2>Delete group</h2>
+
+        <label>Group <sup>(read-only)</sup>
+            <input data-co7e-column="cGroup" type="text" name="group" required readonly>
+        </label>
+
+        <button type="button" onclick="deleteGroup(this, event)">Delete</button>
+    </form>
+</template>
+
+<template id="tmplNoteListItem">
+    <li>  
+        <form class="co7e-no-style co7e-li-style">
+            <div class="co7e-vertical-layout">
+                <b>Note</b>
+                <pre data-co7e-column="cText"></pre>
+                <div></div>
+            </div>
+
+            <div class="co7e-vertical-layout">
+                <b>Date</b>
+                <span data-co7e-column="cDate"></span>
+                <div></div>
+            </div>
+
+            <div class="co7e-vertical-layout">
+                <b>User</b>
+                
+                <div>
+                    <span data-co7e-column="cUser"></span>@
+                    <span data-co7e-column="cHost"></span>
+                </div>
+                
+                <div></div>
+            </div>
+            
+            <div class="co7e-vertical-layout">
+                <b>Group</b>
+                
+                <div>
+                    <span data-co7e-column="cGroup"></span>@
+                    <span data-co7e-column="cGroupHost"></span>
+                </div>
+                
+                <div></div>
+            </div>
+
+            <div class="co7e-vertical-layout">
+                <b>Attachments</b>
+                
+                <input data-co7e-column="cBatch" type="hidden" name="batch">
+                
+                <button type="button" class="co7e-no-style" onclick="loadAttachments(this, event)"><i class="fas fa-paperclip"></i></button>
+                
+                <div></div>
+            </div>
+
+            <ul data-attachments style="width:100%;"></ul>
+        </form>
+    </li>
+</template>
+
+<template id="tmplAttachmentListItem">
+    <li><a target="_blank" data-co7e-column="cPath"><span data-co7e-column="cName"></span></a></li>
+</template>

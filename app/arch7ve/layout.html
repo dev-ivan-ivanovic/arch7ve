@@ -1,0 +1,202 @@
+<!------------------------------------------------------------------------------------------------------
+"Arch7ve" an open-source web app for document archiving written using "co7e" the open-source web framework.
+Copyright (C) 2021  Ivan Ivanovic
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+------------------------------------------------------------------------------------------------------>
+
+<div class="co7e-container">
+    <div>
+        <form>
+            <button id="btnSignInSignOut" type="button" onclick="co7e.view('view-group-1', 'signInView')">Sign in</button>
+            
+            <div data-co7e-member-area>
+                <button type="button" onclick="enumerateCurrentUserGroup();co7e.view('view-group-1', 'noteView')">Notes</button>
+                <button type="button" onclick="enumerateCurrentUserGroup();co7e.view('view-group-1', 'archiveView')">Archive</button>
+
+                <div data-co7e-superuser-area>
+                    <button type="button" onclick="enumerateUser();co7e.view('view-group-1', 'usersView')">Users</button>
+                    <button type="button" onclick="enumerateGroup();co7e.view('view-group-1', 'groupsView')">Groups</button>
+                    <button type="button" onclick="enumerateUser();enumerateGroup();enumerateUserGroup();co7e.view('view-group-1', 'usersGroupsView')">Users/Groups</button>
+                </div>
+            </div>
+        </form>
+    </div>
+            
+    <div data-co7e-view-group="view-group-1">
+        <div data-co7e-view="signInView">
+            <form onkeydown="signIn(this, event)">
+                <h2>Sign in</h2>
+
+                <label>User
+                    <input type="text" name="user" required>
+                </label>
+                
+                <label>Host
+                    <input type="text" name="host" required>
+                </label>
+
+                <label>Password
+                    <input type="password" name="password" required>
+                </label>
+
+                <button type="button" onclick="signIn(this, event)">Sign in</button>
+            </form>
+        </div>
+
+        <div data-co7e-view="noteView">
+            <form>
+                <h2>Create note</h2>
+                
+                <label>Group
+                    <select data-id="cboCurrentUserGroup" name="group" required></select>
+                </label>
+
+                <label>Note
+                    <textarea name="note" required></textarea>
+                </label>
+                
+                <div data-co7e-uploader></div>
+
+                <button type="button" onclick="postNote(this, event)">Post</button>
+            </form> 
+        </div>
+        
+        <div data-co7e-view="archiveView">
+            <form onkeydown="filterNote(this, event)">
+                <h2>Filter notes</h2>
+                
+                <label>Group
+                    <select data-id="cboCurrentUserGroup" name="group" required></select>
+                </label>
+                
+                <label>From date
+                    <input type="date" name="fromDate" required>
+                </label>
+                
+                <label>To date
+                    <input type="date" name="toDate" required>
+                </label>
+
+                <label>Keyword
+                    <input type="search" name="keyword">
+                </label>
+
+                <button type="button" onclick="filterNote(this, event)">Filter</button>
+            </form>
+            
+            <ul id="lstNotes"></ul>
+        </div>
+
+        <div data-co7e-view="usersView">
+            <form onkeydown="createUser(this, event)">
+                <h2>Create user</h2>
+
+                <label>User
+                    <input type="text" name="user" required>
+                </label>
+                
+                <label>Type
+                    <select name="type" required>
+                        <option selected value="N">User</option>
+                        <option value="Y">Superuser</option>
+                    </select>
+                </label>
+
+                <label>Password
+                    <input type="password" name="password" required>
+                </label>
+
+                <button type="button" onclick="createUser(this, event)">Create</button>
+            </form>
+            
+            <form onkeydown="filterUser(this, event)" id="frmFindUser">
+                <h2>Filter user</h2>
+
+                <label>Keyword
+                    <input type="search" name="keyword" />
+                </label>
+
+                <button type="button" onclick="filterUser(this, event)">Filter</button>
+            </form>
+            
+            <ul id="lstUsers"></ul>
+
+            <div id="findUserResults"></div>  
+        </div>
+        
+        <div data-co7e-view="groupsView">
+            <form onkeydown="createGroup(this, event)">
+                <h2>Create group</h2>
+
+                <label>Group
+                    <input type="text" name="group" required>
+                </label>
+
+                <button type="button" onclick="createGroup(this, event)">Create</button>
+            </form>
+            
+            <form onkeydown="filterGroup(this, event)" id="frmFindGroup">
+                <h2>Filter group</h2>
+
+                <label>Keyword
+                    <input type="search" name="keyword" required>
+                </label>
+
+                <button type="button" onclick="filterGroup(this, event)">Filter</button>
+            </form>
+            
+            <ul id="lstGroups"></ul>
+
+            <div id="findGroupResults"></div>  
+        </div>
+        
+        <div data-co7e-view="usersGroupsView">
+            <form>
+                <h2>Users/Groups</h2>
+                
+                <label>User
+                    <select id="cboUsers" name="user" required></select>
+                </label>
+                        
+                <label>Group
+                    <select id="cboGroups" name="group" required></select>
+                </label>
+                
+                <label>Type
+                    <select name="type" required>
+                        <option selected value="N">User</option>
+                        <option value="Y">Superuser</option>
+                    </select>
+                </label>
+                
+                <button type="button" onclick="if (window.confirm('Link User/Group?')) linkUserGroup(this, event)">Link</button>
+                
+                <button type="button" onclick="if (window.confirm('Unlink User/Group?')) unlinkUserGroup(this, event)">Unlink</button>
+            </form>
+            
+            <form onkeydown="filterUserGroup(this, event)" id="frmFilterUsersGroups">
+                <h2>Filter user/group</h2>
+
+                <label>Keyword
+                    <input type="search" name="keyword" required>
+                </label>
+
+                <button type="button" onclick="filterUserGroup(this, event)">Filter</button>
+            </form>
+            
+            <ul id="lstUsersGroups"></ul>
+        </div>
+    </div>
+</div>
